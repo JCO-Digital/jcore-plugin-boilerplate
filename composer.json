@@ -1,0 +1,53 @@
+{
+  "name": "jco/jcore-broiler",
+  "description": "A B(r)oilerplate for JCORE plugins",
+  "autoload": {
+    "psr-4": {
+      "JcoreBroiler\\": "classes/"
+    }
+  },
+  "authors": [
+    {
+      "name": "J&Co Digital",
+      "email": "maxemilian@jco.fi"
+    }
+  ],
+  "extra": {
+    "strauss": {
+      "exclude_from_prefix": {
+        "packages": [
+          "timber/timber"
+        ]
+      },
+      "exclude_from_copy": {
+        "packages": [
+          "timber/timber"
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "strauss": [
+      "vendor/bin/strauss"
+    ],
+    "post-install-cmd": [
+      "@strauss"
+    ],
+    "post-update-cmd": [
+      "@strauss"
+    ]
+  },
+  "require": {
+    "stellarwp/db": "^1.0",
+    "timber/timber": "^1.22"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-latest",
+    "brianhenryie/strauss": "^0.14.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  }
+}

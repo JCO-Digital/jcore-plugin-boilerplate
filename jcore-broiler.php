@@ -98,7 +98,7 @@ function register_plugin_activation_hook(): void {
  * @return void
  */
 function load_translations(): void {
-	load_plugin_textdomain( BRO, false, basename( __DIR__ ) . '/languages' );
+	load_plugin_textdomain( BROILER_TEXT_DOMAIN, false, basename( __DIR__ ) . '/languages' );
 }
 
 register_activation_hook( __FILE__, __NAMESPACE__ . '\register_plugin_activation_hook' );

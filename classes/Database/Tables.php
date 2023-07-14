@@ -5,7 +5,7 @@ namespace JcoreBroiler\Database;
 /**
  * The tables class can be used to access and modify the database tables.
  *
- * @package TahtiPollo
+ * @package JcoreBroiler\Database
  */
 class Tables {
 

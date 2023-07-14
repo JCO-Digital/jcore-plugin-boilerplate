@@ -14,7 +14,7 @@ abstract class RestAPI implements RestInterface {
 	 *
 	 * @var string
 	 */
-	public static string $namespace = 'tahtipollo/v1';
+	public static string $namespace = 'jcore-broiler/v1';
 
 	/**
 	 * Gets a "nice" name of the class.

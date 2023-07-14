@@ -14,7 +14,7 @@ class Option {
 	 *
 	 * @var string
 	 */
-	private static string $namespace = 'tahtipollo';
+	private static string $namespace = BROILER_OPTION_PREFIX;
 
 	/**
 	 * Returns the namespace.

@@ -49,7 +49,7 @@ class Bootstrap {
 		wp_register_script( 'jcore-broiler', '', array(), '1', false );
 		wp_enqueue_script( 'jcore-broiler' );
 		wp_localize_script(
-			'jquery',
+			'jcore-broiler',
 			'jcoreBroiler',
 			array(
 				'api_urls' => $api_urls,

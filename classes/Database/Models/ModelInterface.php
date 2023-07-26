@@ -26,6 +26,16 @@ interface ModelInterface {
 	 */
 	public static function get_hook_prefix(): string;
 
+
+	/**
+	 * Returns a key to be used for the cache.
+	 *
+	 * @param string|int $key A key to be used for the cache.
+	 *
+	 * @return string
+	 */
+	public static function get_cache_key( string|int $key ): string;
+
 	/**
 	 * Returns the query builder with the filters applied.
 	 *
@@ -49,27 +59,36 @@ interface ModelInterface {
 	/**
 	 * Returns an array of all data.
 	 *
+	 * @param array $args An argument array, will be passed to finalize_query.
+	 * @see finalize_query
+	 *
 	 * @return array
 	 */
-	public static function get_all(): array;
+	public static function get_all( array $args ): array;
 
 	/**
 	 * Get a single item by id.
 	 *
-	 * @param int $id The id of the item to get.
+	 * @param int   $id The id of the item to get.
+	 * @param array $args An argument array, will be passed to finalize_query.
+	 *
+	 * @see finalize_query
 	 *
 	 * @return null|object
 	 */
-	public static function get_by_id( int $id ): ?object;
+	public static function get_by_id( int $id, array $args ): ?object;
 
 	/**
 	 * Checks if an item exists.
 	 *
-	 * @param int $id The id of the item to check.
+	 * @param int   $id The id of the item to check.
+	 * @param array $args An argument array, will be passed to finalize_query.
+	 *
+	 * @see finalize_query
 	 *
 	 * @return bool
 	 */
-	public static function exists( int $id ): bool;
+	public static function exists( int $id, array $args ): bool;
 
 	/**
 	 * Deletes an item by id.
@@ -93,4 +112,30 @@ interface ModelInterface {
 	 * @return void
 	 */
 	public static function init(): void;
+
+	/**
+	 * This method is called after the query has been built it will call the query, and return the result.
+	 *
+	 * @param QueryBuilder $query The query builder to finalize.
+	 * @param array        $args {
+	 *           An array of arguments, that can be used to modify the query.
+	 *           @type string|int $cache_key A key to be used for the cache.
+	 *           @type bool $all Is this a multiselect query.
+	 *           @type bool $cache Should the query be cached.
+	 *           @type int $cache_time The time in seconds to cache the query.
+	 * }
+	 *
+	 * @return mixed
+	 */
+	public static function finalize_query( QueryBuilder $query, array $args ): mixed;
+
+	/**
+	 * Updates a single row in the database.
+	 *
+	 * @param int   $id The id of the row to update.
+	 * @param array $update_data The data to update.
+	 *
+	 * @return false|int
+	 */
+	public static function update( int $id, array $update_data ): false|int;
 }

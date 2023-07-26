@@ -5,3 +5,5 @@ const BROILER_TABLE_PREFIX         = 'jcore_broiler_';
 const BROILER_OPTION_PREFIX        = 'jcore_broiler_';
 
 const BROILER_TEXT_DOMAIN = 'jcore-broiler';
+
+const BROILER_PLUGIN_PATH = __DIR__;

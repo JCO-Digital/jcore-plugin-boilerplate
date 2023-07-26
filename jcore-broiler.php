@@ -19,7 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once __DIR__ . '/consts.php';
-require_once __DIR__ . '/helpers.php';
 
 // Load regular composer autoloader.
 if ( is_readable( __DIR__ . COMPOSER_AUTOLOADER ) ) {
@@ -34,6 +33,9 @@ if ( is_readable( __DIR__ . PREFIXED_COMPOSER_AUTOLOADER ) ) {
 } elseif ( is_readable( ABSPATH . PREFIXED_COMPOSER_AUTOLOADER ) ) {
 	require_once ABSPATH . PREFIXED_COMPOSER_AUTOLOADER;
 }
+
+require_once __DIR__ . '/helpers.php';
+require_once __DIR__ . '/includes/acf.php';
 
 /**
  * Checks the prerequisites for the plugin.

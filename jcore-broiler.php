@@ -21,8 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/consts.php';
 require_once __DIR__ . '/helpers.php';
 
-$failed = false;
-
 // Load regular composer autoloader.
 if ( is_readable( __DIR__ . COMPOSER_AUTOLOADER ) ) {
 	require_once __DIR__ . COMPOSER_AUTOLOADER;

@@ -49,7 +49,6 @@ function check_prerequisites(): bool {
 			is_readable( ABSPATH . PREFIXED_COMPOSER_AUTOLOADER ) );
 
 	if ( $pass ) {
-		add_action( 'plugins_loaded', __NAMESPACE__ . '\initialize_plugin' );
 		return true;
 	}
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -103,3 +102,4 @@ function load_translations(): void {
 
 register_activation_hook( __FILE__, __NAMESPACE__ . '\register_plugin_activation_hook' );
 add_action( 'plugins_loaded', __NAMESPACE__ . '\load_translations' );
+add_action( 'plugins_loaded', __NAMESPACE__ . '\initialize_plugin' );

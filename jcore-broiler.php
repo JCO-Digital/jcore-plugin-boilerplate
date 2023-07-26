@@ -101,5 +101,6 @@ function load_translations(): void {
 }
 
 register_activation_hook( __FILE__, __NAMESPACE__ . '\register_plugin_activation_hook' );
+add_action( 'admin_init', __NAMESPACE__ . '\check_prerequisites' );
 add_action( 'plugins_loaded', __NAMESPACE__ . '\load_translations' );
 add_action( 'plugins_loaded', __NAMESPACE__ . '\initialize_plugin' );

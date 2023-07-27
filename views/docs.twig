@@ -1,0 +1,33 @@
+<div class="grid grid-cols-6 container pt-5" x-data="data">
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('data', () => ({
+                current: '',
+                init() {
+                    // Get the hash from the URL and set the current to that otherwise set it to the first slug.
+                    this.current = window.location.hash ? window.location.hash.substring(1) : '{{ docs_file[0].slug }}'
+                }
+            }))
+        })
+    </script>
+    <script>hljs.highlightAll();</script>
+    <div class="col-span-1">
+        <ul class="p-3">
+            {% for docs in docs_file %}
+                <li class="text-xl font-semibold break-all">
+                    <a href="#{{ docs.slug }}" :class="current === '{{ docs.slug }}' ? 'underline text-blue-700' : ''"
+                       @click="current = '{{ docs.slug }}'">
+                        {{ docs.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-span-5">
+        {% for docs in docs_file %}
+            <div id="{{ docs.slug }}" x-show="current === '{{ docs.slug }}'">
+                {{ docs.content }}
+            </div>
+        {% endfor %}
+    </div>
+</div>

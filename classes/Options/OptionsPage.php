@@ -79,8 +79,16 @@ class OptionsPage {
 	private array $assets;
 
 	/**
+	 * The parent menu slug.
+	 *
+	 * @var string
+	 */
+	private string $parent;
+
+	/**
 	 * Initializes the options page.
 	 *
+	 * @param string $parent The parent menu slug.
 	 * @param string $menu_title The menu title to be used for the page.
 	 * @param string $page_title The title to be used for the page.
 	 * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu).
@@ -92,6 +100,7 @@ class OptionsPage {
 	 * @param array  $assets The assets to be used for the page.
 	 */
 	public function __construct(
+		string $parent_slug,
 		string $menu_title,
 		string $page_title,
 		string $menu_slug,
@@ -101,6 +110,7 @@ class OptionsPage {
 		int $position = 99,
 		string $icon_url = '',
 		array $assets = array() ) {
+		$this->parent          = $parent_slug;
 		$this->menu_title      = $menu_title;
 		$this->page_title      = $page_title;
 		$this->menu_slug       = $menu_slug;
@@ -177,15 +187,27 @@ class OptionsPage {
 	 * @return void
 	 */
 	final public function registers_option_page(): void {
-		add_menu_page(
-			$this->page_title,
-			$this->menu_title,
-			$this->capability,
-			$this->menu_slug,
-			array( $this, 'render_page' ),
-			$this->icon_url,
-			$this->position
-		);
+		if ( empty( $this->parent ) ) {
+			add_menu_page(
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'render_page' ),
+				$this->icon_url,
+				$this->position
+			);
+		} else {
+			add_submenu_page(
+				$this->parent,
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'render_page' ),
+				$this->position
+			);
+		}
 	}
 
 	/**
@@ -196,7 +218,7 @@ class OptionsPage {
 	 * @return void
 	 */
 	final public function enqueue_assets( string $hook ): void {
-		if ( 'toplevel_page_' . $this->menu_slug !== $hook ) {
+		if ( ! str_contains( $hook, $this->menu_slug ) ) {
 			return;
 		}
 
@@ -236,14 +258,23 @@ class OptionsPage {
 
 		$action_url = add_query_arg(
 			array(
-				'page'                     => $this->menu_slug,
+				'page'                      => $this->menu_slug,
 				"{$this->menu_slug}_action" => 1,
 			),
 			admin_url( 'admin.php' )
 		);
 
-		Timber::render(
-			$this->template,
+		$api_nonce = wp_create_nonce( 'wp_rest' );
+
+		/**
+		 * Filters the context for the options page.
+		 * This hook can be used to add additional data to the context.
+		 *
+		 * @param array $context The context for the options page.
+		 * @param OptionsPage $options_page The options page object.
+		 */
+		$context = apply_filters(
+			'timber_context_' . $this->menu_slug,
 			array(
 				'page_title' => $this->page_title,
 				'menu_title' => $this->menu_title,
@@ -251,7 +282,15 @@ class OptionsPage {
 				'action_url' => $action_url,
 				'options'    => $options,
 				'errors'     => get_settings_errors(),
-			)
+				'api_nonce'  => $api_nonce,
+				'success'    => isset( $_GET['success'] ),
+			),
+			$this
+		);
+
+		Timber::render(
+			$this->template,
+			$context
 		);
 	}
 
@@ -261,6 +300,23 @@ class OptionsPage {
 	 * @return void
 	 */
 	final public function save_options(): void {
+		// This is the URL we will redirect the user to after saving the options.
+		$url = add_query_arg(
+			array(
+				'page' => $this->menu_slug,
+			),
+			admin_url( 'admin.php' )
+		);
+
+		/**
+		 * Fires before the options are saved.
+		 * This hook can be used to handle certain actions before we handle them and attempt to save the options
+		 *
+		 * @param string $url The url to redirect to after saving the options.
+		 * @param OptionsPage $options_page The options page object.
+		 */
+		do_action( 'save_action_' . $this->menu_slug, $url, $this );
+
 		if ( ! isset( $_GET[ "{$this->menu_slug}_action" ] ) ) {
 			return;
 		}
@@ -278,15 +334,23 @@ class OptionsPage {
 
 			$url = add_query_arg(
 				array(
-					'page'    => $this->menu_slug,
 					'success' => true,
 				),
-				admin_url( 'admin.php' )
+				$url
 			);
 
 			// Redirect to avoid form resubmission.
 			wp_safe_redirect( $url );
 			exit;
 		}
+	}
+
+	/**
+	 * Get the menu slug, which is used for many things.
+	 *
+	 * @return string
+	 */
+	final public function get_menu_slug(): string {
+		return $this->menu_slug;
 	}
 }

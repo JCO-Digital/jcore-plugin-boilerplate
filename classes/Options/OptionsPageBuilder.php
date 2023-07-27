@@ -80,6 +80,23 @@ class OptionsPageBuilder {
 	 */
 	private ?array $assets;
 
+	/**
+	 * The parent slug to be used for the page.
+	 *
+	 * @var string
+	 */
+	private string $parent_slug = '';
+
+
+	/**
+	 * Set the parent slug of the options page currently being built.
+	 *
+	 * @param string $parent_slug The parent slug to be used for the page.
+	 */
+	final public function set_parent_slug( string $parent_slug ): OptionsPageBuilder {
+		$this->parent_slug = $parent_slug;
+		return $this;
+	}
 
 	/**
 	 * Sets the menu title to the options page currently being built.
@@ -163,7 +180,14 @@ class OptionsPageBuilder {
 	/**
 	 * Adds a stylesheet to the options page currently being built.
 	 *
-	 * @param array $css_arr The name of the css file to include.
+	 * @param array $css_arr {
+	 *    An array of all the stylesheet parameters.
+	 *    @type string $handle The name of the stylesheet.
+	 *    @type string $src The source of the stylesheet.
+	 *    @type array $deps The dependencies of the stylesheet.
+	 *    @type string|bool $ver The version of the stylesheet.
+	 *    @type string $media The media of the stylesheet.
+	 * }
 	 *
 	 * @return OptionsPageBuilder
 	 */
@@ -175,7 +199,14 @@ class OptionsPageBuilder {
 	/**
 	 * Adds a script to the options page currently being built.
 	 *
-	 * @param array $js_arr The name of the js file to include.
+	 * @param array $js_arr {
+	 *     An array of all the script parameters.
+	 *     @type string $handle The name of the script.
+	 *     @type string $src The source of the script.
+	 *     @type array $deps The dependencies of the script.
+	 *     @type string|bool $ver The version of the script.
+	 *     @type bool $in_footer Whether to enqueue the script in the footer.
+	 * }
 	 *
 	 * @return OptionsPageBuilder
 	 */
@@ -215,6 +246,7 @@ class OptionsPageBuilder {
 	 */
 	final public function build(): OptionsPage {
 		$options_page = new OptionsPage(
+			$this->parent_slug,
 			$this->menu_title,
 			$this->page_title,
 			$this->menu_slug,
@@ -223,7 +255,7 @@ class OptionsPageBuilder {
 			$this->settings_fields,
 			$this->position,
 			$this->icon_url,
-			$this->assets
+			$this->assets ?? array()
 		);
 		$options_page->register();
 		return $options_page;

@@ -72,6 +72,7 @@ add_action( 'plugins_loaded', __NAMESPACE__ . '\check_prerequisites' );
 function initialize_plugin(): void {
 	// Bootstrap the plugins parts, comment out the ones you don't need.
 	Database\Bootstrap::init();
+	Docs\Bootstrap::init();
 	// RestAPI\Bootstrap::init();
 	// Options\Bootstrap::init();
 }

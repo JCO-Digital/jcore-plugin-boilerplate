@@ -39,7 +39,9 @@
   },
   "require": {
     "stellarwp/db": "^1.0",
-    "timber/timber": "^1.22"
+    "timber/timber": "^1.22",
+    "twig/markdown-extra": "^3.7.0",
+    "league/commonmark": "^2.4.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

@@ -38,7 +38,7 @@ class Bootstrap {
 	 * @param Environment $twig The twig environment.
 	 * @return Environment
 	 */
-	public static function add_markdown_to_twig( $twig ) {
+	public static function add_markdown_to_twig( Environment $twig ): Environment {
 		$twig->addExtension( new MarkdownExtension() );
 		$twig->addRuntimeLoader(
 			new class() implements RuntimeLoaderInterface {

@@ -162,13 +162,13 @@ class OptionsPageBuilder {
 	/**
 	 * Adds a setting field to the options page currently being built.
 	 *
-	 * @param string $option_name The name of the option.
-	 * @param string $option_label The label of the option.
-	 * @param string $callback The callback function to sanitize the option.
+	 * @param string       $option_name The name of the option.
+	 * @param string       $option_label The label of the option.
+	 * @param string|array $callback The callback function to sanitize the option.
 	 *
 	 * @return OptionsPageBuilder
 	 */
-	final public function add_setting_field( $option_name, $option_label, $callback = 'sanitize_text_field' ): OptionsPageBuilder {
+	final public function add_setting_field( string $option_name, string $option_label, string|array $callback = 'sanitize_text_field' ): OptionsPageBuilder {
 		$this->settings_fields[] = array(
 			'option_name'       => sanitize_title( $option_name ),
 			'option_label'      => $option_label,

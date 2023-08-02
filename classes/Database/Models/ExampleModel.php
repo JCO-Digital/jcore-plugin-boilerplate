@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName,Squiz.Commenting.ClassComment.Missing
 
 namespace JcoreBroiler\Database\Models;
 

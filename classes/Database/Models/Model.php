@@ -2,6 +2,7 @@
 
 namespace JcoreBroiler\Database\Models;
 
+use JcoreBroiler\Cache\CacheManager;
 use JcoreBroiler\StellarWP\DB\DB;
 use JcoreBroiler\StellarWP\DB\QueryBuilder\QueryBuilder;
 
@@ -99,9 +100,7 @@ abstract class Model implements ModelInterface {
 		if ( ! isset( $args['id'] ) ) {
 			return false;
 		}
-		// Clear the cache and delete the item.
-		wp_cache_delete( static::get_cache_key( 'all' ), static::get_hook_prefix() );
-		wp_cache_delete( static::get_cache_key( 'single_' . $args['id'] ), static::get_hook_prefix() );
+		static::clear_cache();
 		return DB::table( DB::raw( static::get_table_name() ) )
 			->where( 'id', $args['id'] )
 			->delete();
@@ -136,10 +135,9 @@ abstract class Model implements ModelInterface {
 		);
 		$cached = false;
 		if ( $args['cache'] ) {
-			// TODO: Think about a better implementation of the key, since this could be hard to reset later.
 			// Check if there exists a cached value for the query.
 			$cache_key = $args['cache_key'];
-			$cached    = wp_cache_get( $cache_key, static::get_hook_prefix() );
+			$cached    = CacheManager::get( $cache_key, static::get_hook_prefix() );
 		}
 		if ( false !== $cached ) {
 			return $cached;
@@ -160,7 +158,7 @@ abstract class Model implements ModelInterface {
 		}
 
 		$result = array_map(
-			function ( $item ) {
+			static function( $item ) {
 				// Go through all the items attributes and convert them to the correct type, using the class properties.
 				foreach ( get_object_vars( $item ) as $key => $value ) {
 					// We use the class properties to convert the values to the correct type.
@@ -179,7 +177,7 @@ abstract class Model implements ModelInterface {
 		}
 		if ( $args['cache'] && isset( $cache_key ) ) {
 			// Cache the result.
-			wp_cache_set( $cache_key, $result, static::get_hook_prefix(), $args['cache_time'] );
+			CacheManager::set( $cache_key, $result, static::get_hook_prefix(), $args['cache_time'] );
 		}
 
 		return $result;
@@ -191,10 +189,15 @@ abstract class Model implements ModelInterface {
 	public static function update( int $id, array $update_data ): false|int {
 		$query = DB::table( DB::raw( static::get_table_name() ) )
 			->where( 'id', $id );
-		// Once again, since WPEngine does not allow to clear the cache by group we need to clear all the caches.
-		wp_cache_delete( static::get_cache_key( 'single_' . $id ), static::get_hook_prefix() );
-		wp_cache_delete( static::get_cache_key( 'all' ), static::get_hook_prefix() );
+		static::clear_cache();
 		do_action( static::get_hook_prefix() . '_update', $id, $update_data );
 		return static::filter_query( 'update', $query )->update( $update_data );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function clear_cache(): void {
+		CacheManager::clear_cache_group( static::get_hook_prefix() );
 	}
 }

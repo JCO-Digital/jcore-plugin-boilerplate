@@ -138,4 +138,11 @@ interface ModelInterface {
 	 * @return false|int
 	 */
 	public static function update( int $id, array $update_data ): false|int;
+
+	/**
+	 * Clears the cache for the model.
+	 *
+	 * @return void
+	 */
+	public static function clear_cache(): void;
 }

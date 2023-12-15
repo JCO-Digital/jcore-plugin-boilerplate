@@ -36,6 +36,7 @@ if ( is_readable( __DIR__ . PREFIXED_COMPOSER_AUTOLOADER ) ) {
 
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/includes/acf.php';
+require_once __DIR__ . '/includes/blocks.php';
 
 /**
  * Checks the prerequisites for the plugin.

@@ -8,3 +8,4 @@ This plugin is a boilerplate for creating new plugins. It includes a few basic f
 - ACF Fields registering
 - Rest API endpoints registering
 - Built-in Docs
+- Gutenberg Blocks registering

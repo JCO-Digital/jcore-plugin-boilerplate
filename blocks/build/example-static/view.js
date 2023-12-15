@@ -1,0 +1,1 @@
+console.log("Hello World! (from example-static-example-static block, hejdå)");
